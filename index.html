@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script>
+        async function sendMessage() {
+            const session_id = document.getElementById("session_id").value;
+            const message = document.getElementById("message").value;
+
+            const response = await fetch("http://127.0.0.1:5000/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ session_id, message })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("response").innerText = JSON.stringify(data);
+            } else {
+                document.getElementById("response").innerText = `Error: ${response.statusText}`;
+            }
+        }
+
+        async function resetSession() {
+            const session_id = document.getElementById("session_id").value;
+
+            const response = await fetch("http://127.0.0.1:5000/reset", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ session_id })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("response").innerText = JSON.stringify(data);
+            } else {
+                document.getElementById("response").innerText = `Error: ${response.statusText}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Chatbot</h1>
+    <div>
+        <label for="session_id">Session ID:</label>
+        <input type="text" id="session_id">
+    </div>
+    <div>
+        <label for="message">Message:</label>
+        <input type="text" id="message">
+    </div>
+    <div>
+        <button onclick="sendMessage()">Send Message</button>
+        <button onclick="resetSession()">Reset Session</button>
+    </div>
+    <div>
+        <h2>Response:</h2>
+        <pre id="response"></pre>
+    </div>
+</body>
